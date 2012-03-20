@@ -1,0 +1,16 @@
+
+Branching model:
+* Develop features in a feature branch
+* Integrate to the branch "develop"
+  - Unit tests must pass
+  - New features may be disabled when they are not yet usable, all enabled features should be usable.
+* Keep the branch "master" stable
+  - Same as the "develop" branch, but also test tested on the target device.
+
+Development practices:
+* Avoid duplicate code
+* Do not add generated code to the repository
+* Have a consistent and good style
+* Cover code that should not break with unit tests
+* Use common sense when available
+
