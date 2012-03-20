@@ -1,0 +1,26 @@
+Team name: Team-1
+Contact person: Jukka Jokelainen
+Target device: Samsung Series 7 Slate (Windows 8)
+Target Browser: IE 10 (or alternative)
+
+
+An app that continuously tracks your GPS location and provides info about your trip. This is useful for people that do outdoor sports such as biking, hiking, snowboarding, skiing, etc.
+
+Features in priority order:
+1) Display current Info
+   coordinates, speed, etc.
+
+2) Plot the route on a map
+
+3) Settings, Localization & Personalization
+   metric/imperial, language, theme, etc.
+
+4) Store the route online
+   - Requires authentication (registration, login)
+
+
+Criteria for the exercise:
+1) HTML5 generic key APIs: Offline
+2) Mobile device feature: GPS
+3) Server element: online maps, storing data online
+
