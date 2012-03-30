@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+		<link rel="stylesheet" href="selftest/external/jasmine/jasmine.css" />
+		<script src="selftest/selftest.js"></script>
+
+		<script>
+			var SelfTest;
+			SelfTest.registerFiles([
+				// All files that should work
+				"index.html",
+				"tracker.js",
+				"selftest.html"
+				// You cannot test the selftest itself: "selftest/selftest.js"
+			]);
+		</script>
+
+	</head>
+	<body>
+		<script>
+			SelfTest.execute();
+		</script>
+	</body>
+</html>

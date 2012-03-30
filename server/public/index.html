@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>GPS Tracker</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" />
+		<link rel="stylesheet" href="tracker.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
+		<script type="text/javascript" src="tracker.js"></script>
+		<script type="text/javascript">
+			'use strict';
+			$(document).ready(function () {
+				tracker.setDebugCoordsList($("#coords"));
+				$('#toggleTracking').click(function () {
+					tracker.toggleTracking();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="main">
+			<header>
+				<h1>GPS Tracker</h1>
+			</header>
+			<div class="content">
+				<a id="toggleTracking" href="#">Start/Stop tracking</a>
+				<div id="coords">
+					
+				</div>
+			</div>
+			<footer>
+				<h6></h6>
+			</footer>
+		</div>
+	</body>
+</html>
