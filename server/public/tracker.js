@@ -14,13 +14,13 @@ var tracker = {
 		if (coordinates && coordinates.coords) {
 			if ($debugCoordsList) {
 				$debugCoordsList.append('<div>Lat: ' + coordinates.coords.latitude + ', Lng: '
-					+ coordinates.coords.longitude + ', Accuracy: '+coordinates.coords.accuracy+'</div>');
+					+ coordinates.coords.longitude + ', Accuracy: '+coordinates.coords.accuracy+' - ' +coordinates.timestamp + '</div>');
 			}
 		}
 	},
 
 	pollCoordinates: function () {
-		navigator.geolocation.getCurrentPosition(tracker.coordinatesToList);
+		navigator.geolocation.watchPosition(tracker.coordinatesToList, null, {maximumAge:1000});
 	},
 
 	toggleTracking: function () {
@@ -29,7 +29,8 @@ var tracker = {
 			trackerInterval = null;
 		}
 		else {
-			trackerInterval = setInterval('tracker.pollCoordinates()', intervalTime);
+			tracker.pollCoordinates();
+			// trackerInterval = setInterval('tracker.pollCoordinates()', intervalTime);
 		}
 	}
 }
