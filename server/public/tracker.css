@@ -5,6 +5,13 @@
 	border-radius: 5px;
 }
 
+#coords {
+	margin: 0.5em;
+	padding: 0.5em;
+	border: 2px solid #666;
+	border-radius: 1em;
+}
+
 #map_canvas {
 	height: 500px;
 }
