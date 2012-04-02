@@ -54,7 +54,11 @@ SelfTest.executeJslint = function () {
 	document.write("<div class=\"show-passed\">");
 	var filename;
 	var content;
-	var options = null;
+	var options = {
+		'browser': true,
+		'vars': true,
+		'predef': [ '$', 'tracker' ]
+	};
 	for (var i = 0; i < SelfTest.filenames.length; i++) {
 		filename = SelfTest.filenames[i];
 		content = SelfTest.readFile(filename);
