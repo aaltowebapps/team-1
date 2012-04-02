@@ -3,15 +3,17 @@
 	<head>
 		<title>GPS Tracker</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" />
-		<link rel="stylesheet" href="tracker.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" type="text/css" />
+		<link rel="stylesheet" href="tracker.css" type="text/css" />
 		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
 		<script type="text/javascript" src="tracker.js"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
 			'use strict';
 			$(document).ready(function () {
 				tracker.setDebugCoordsList($("#coords"));
+				tracker.initializeGoogleMaps("map_canvas", 60.186652, 24.82187);
 				$('#toggleTracking').click(function () {
 					tracker.toggleTracking();
 				});
@@ -25,9 +27,8 @@
 			</header>
 			<div class="content">
 				<a id="toggleTracking" href="#">Start/Stop tracking</a>
-				<div id="coords">
-					
-				</div>
+				<div id="coords"></div>
+				<div id="map_canvas"></div>
 			</div>
 			<footer>
 				<h6></h6>
