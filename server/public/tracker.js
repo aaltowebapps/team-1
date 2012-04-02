@@ -27,8 +27,10 @@
 			if (coordinates && coordinates.coords && coordinates.timestamp) {
 				if ($debugCoordsList) {
 					var children = $debugCoordsList.children();
-					if (children.length >= 10) {
+					var diff = children.length - 10;
+					for (var i = diff; i > 0; i--) {
 						children.last().detach();
+						children = $debugCoordsList.children();
 					}
 					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + '</div>');
 					$debugCoordsList.prepend($item);
