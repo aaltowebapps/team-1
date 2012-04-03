@@ -26,13 +26,10 @@
 		coordinatesToList: function (coordinates) {
 			var i;
 			var cssClass = 'debugCoord';
-			if (coordinates && coordinates.coords && coordinates.timestamp)
-			{
-				if ($debugCoordsList)
-				{
+			if (coordinates && coordinates.coords && coordinates.timestamp) {
+				if ($debugCoordsList) {
 					var children = $debugCoordsList.children().hasClass(cssClass);
-					for (i = children.length - 10; i > 0; i--)
-					{
+					for (i = children.length - 10; i > 0; i = i - 1) {
 						children.last().removeClass(cssClass).hide('slow');
 						children = children.slice(0, children.length - 1);
 					}
@@ -45,10 +42,8 @@
 		},
 
 		drawRoute: function () {
-			if (googleMap)
-			{
-				if (!routeLine)
-				{
+			if (googleMap) {
+				if (!routeLine) {
 					routeLine = new google.maps.Polyline({
 						strokeColor: "#0000FF",
 						strokeOpacity: 1.0,
@@ -66,8 +61,7 @@
 		},
 
 		startPolling: function () {
-			if (navigator)
-			{
+			if (navigator) {
 				watcherId = navigator.geolocation.watchPosition(tracker.positionCallback, tracker.positionErrorCallback, {
 					enableHighAccuracy: true,
 					timeout: 5000,
@@ -77,8 +71,7 @@
 		},
 
 		stopPolling: function () {
-			if (navigator && watcherId !== null)
-			{
+			if (navigator && watcherId !== null) {
 				navigator.geolocation.clearWatch(watcherId);
 				watcherId = null;
 			}
@@ -90,14 +83,12 @@
 		},
 
 		positionErrorCallback: function (error) {
-			if (error && error.code && error.message)
-			{
+			if (error && error.code && error.message) {
 				var $errorNote = $("body").children('.errorNote');
 				var errorStr = 'Error (' + error.code + '): ' + error.message;
-				if (!$errorNote)
-				{
+				if (!$errorNote) {
 					$errorNote = $('<div>' + errorStr + '</div>');
-					$errorNote.addClass('errorNote')
+					$errorNote.addClass('errorNote');
 					$("body").append($errorNote);
 				}
 				$errorNote.html(errorStr);
@@ -105,15 +96,13 @@
 		},
 
 		toggleTracking: function () {
-			if (watcherId !== null)
-			{
+			if (watcherId !== null) {
 				tracker.stopPolling();
-			} else
-			{
+			} else {
 				tracker.startPolling();
 			}
 		}
 	};
 
 	window.tracker = tracker;
-} ());
+}());
