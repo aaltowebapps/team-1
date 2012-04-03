@@ -2,6 +2,7 @@
 	'use strict';
 
 	var $debugCoordsList = null;
+	var maxDebugAmount = 15;
 	var coordinateStorage = [];
 	var trackerInterval = null;
 	var googleMap = null;
@@ -28,9 +29,9 @@
 			var cssClass = 'debugCoord';
 			if (coordinates && coordinates.coords && coordinates.timestamp) {
 				if ($debugCoordsList) {
-					var children = $debugCoordsList.children().hasClass(cssClass);
-					for (i = children.length - 10; i > 0; i = i - 1) {
-						children.last().removeClass(cssClass).hide('slow');
+					var children = $debugCoordsList.children('.' + cssClass);
+					for (i = children.length - maxDebugAmount; i > 0; i = i - 1) {
+						children.last().removeClass(cssClass).hide('slow').detach();
 						children = children.slice(0, children.length - 1);
 					}
 					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + '</div>');
