@@ -1,4 +1,6 @@
-﻿#toggleTracking {
+﻿@charset 'UTF-8';
+
+#toggleTracking {
 	display: block;
 	height: 40px;
 	border: 1px solid black;
