@@ -7,12 +7,19 @@
 		<script src="selftest/selftest.js"></script>
 
 		<script>
-			var SelfTest;
+			// In selftests we depend on "SelfTest"
+			var jslintSelftest = SelfTest.JSLINT_OPTIONS_BROWSER;
+			jslintSelftest.predef.push("SelfTest");
+
+			// In some files we use the "Google Maps API"
+			var jslintGoogleMaps = SelfTest.JSLINT_OPTIONS_BROWSER;
+			jslintGoogleMaps.predef.push("google");
+
 			SelfTest.registerFiles([
-				// All files that should work
-				"index.html",
-				"tracker.js",
-				"selftest.html"
+				// All files that should work, with additional JSLint settings
+				{"file": "index.html", "jslint": SelfTest.JSLINT_OPTIONS_BROWSER},
+				{"file": "tracker.js", "jslint": jslintGoogleMaps},
+				{"file": "selftest.html", "jslint": jslintSelftest}
 				// You cannot test the selftest itself: "selftest/selftest.js"
 			]);
 		</script>
