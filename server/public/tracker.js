@@ -7,8 +7,8 @@
 	var googleMap = null;
 	var routeLine = null;
 	var watcherId = null;
-	var lastTimeStamp = 0;
-	var intervalTime = 1000;
+	var lastTimeStamp = 0; // not in use yet
+	var intervalTime = 1000; // not in use
 	var tracker = {
 		initializeGoogleMaps: function (domId, centerLat, centerLng) {
 			var myOptions = {
@@ -24,25 +24,31 @@
 		},
 
 		coordinatesToList: function (coordinates) {
-			if (coordinates && coordinates.coords && coordinates.timestamp) {
-				if ($debugCoordsList) {
-					var children = $debugCoordsList.children();
-					var diff = children.length - 10;
-					for (var i = diff; i > 0; i--) {
-						children.last().detach();
-						children = $debugCoordsList.children();
+			var i;
+			var cssClass = 'debugCoord';
+			if (coordinates && coordinates.coords && coordinates.timestamp)
+			{
+				if ($debugCoordsList)
+				{
+					var children = $debugCoordsList.children().hasClass(cssClass);
+					for (i = children.length - 10; i > 0; i--)
+					{
+						children.last().removeClass(cssClass).hide('slow');
+						children = children.slice(0, children.length - 1);
 					}
 					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + '</div>');
 					$debugCoordsList.prepend($item);
-					$item.hide().show('fast');
+					$item.addClass(cssClass).hide().show('slow');
 				}
 				coordinateStorage.push(coordinates);
 			}
 		},
 
 		drawRoute: function () {
-			if (googleMap) {
-				if (!routeLine) {
+			if (googleMap)
+			{
+				if (!routeLine)
+				{
 					routeLine = new google.maps.Polyline({
 						strokeColor: "#0000FF",
 						strokeOpacity: 1.0,
@@ -55,12 +61,13 @@
 					arr.push(new google.maps.LatLng(item.coords.latitude, item.coords.longitude));
 				});
 				routeLine.setPath(arr);
-				googleMap.setCenter(arr[arr.length - 1]); // Conditional centering?
+				googleMap.setCenter(arr[arr.length - 1]); // Conditional centering/zooming?
 			}
 		},
 
 		startPolling: function () {
-			if (navigator) {
+			if (navigator)
+			{
 				watcherId = navigator.geolocation.watchPosition(tracker.positionCallback, tracker.positionErrorCallback, {
 					enableHighAccuracy: true,
 					timeout: 5000,
@@ -70,7 +77,8 @@
 		},
 
 		stopPolling: function () {
-			if (navigator && watcherId !== null) {
+			if (navigator && watcherId !== null)
+			{
 				navigator.geolocation.clearWatch(watcherId);
 				watcherId = null;
 			}
@@ -82,10 +90,12 @@
 		},
 
 		positionErrorCallback: function (error) {
-			if (error && error.code && error.message) {
+			if (error && error.code && error.message)
+			{
 				var $errorNote = $("body").children('.errorNote');
 				var errorStr = 'Error (' + error.code + '): ' + error.message;
-				if (!$errorNote) {
+				if (!$errorNote)
+				{
 					$errorNote = $('<div>' + errorStr + '</div>');
 					$errorNote.addClass('errorNote')
 					$("body").append($errorNote);
@@ -95,9 +105,11 @@
 		},
 
 		toggleTracking: function () {
-			if (watcherId !== null) {
+			if (watcherId !== null)
+			{
 				tracker.stopPolling();
-			} else {
+			} else
+			{
 				tracker.startPolling();
 			}
 		}
