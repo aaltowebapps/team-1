@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>GPS Status</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" type="text/css" />
+		<link rel="stylesheet" href="tracker.css" type="text/css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
+		<script type="text/javascript" src="api/gps.js"></script>
+		<script type="text/javascript">
+			'use strict';
+
+            var gps = new GpsApi(navigator.geolocation);
+            gps.start();
+            // gps.stop();
+
+            /*
+			$(document).ready(function () {
+				tracker.setDebugCoordsList($("#coords"));
+				tracker.initializeGoogleMaps("map_canvas", 60.186652, 24.82187);
+				$('#toggleTracking').click(function () {
+					tracker.toggleTracking();
+				});
+			});
+            */
+		</script>
+	</head>
+	<body>
+		<div id="main">
+			<header>
+				<h1>GPS Status</h1>
+			</header>
+			<div class="content">
+                <h3>Coordinates</h3>
+                <label for="latitude">Latitude:</label><input id="latitude" value="?"></input><br/>
+                <label for="longitude">Longitude:</label><input id="longitude" value="?"></input><br/>
+                <label for="altitude">Altitude:</label><input id="altitude" value="?"></input><br/>
+                <h3>Misc</h3>
+                <label for="speed">Speed:</label><input id="speed" value="?"></input><br/>
+                <label for="heading">Heading:</label><input id="heading" value="?"></input><br/>
+                <h3>Accuracy</h3>
+                <label for="coordinates">Coordinates:</label><input id="coordinates" value="?"></input><br/>
+                <label for="altitudeAccuracy">Altitude:</label><input id="altitudeAccuracy" value="?"></input><br/>
+			</div>
+			<footer>
+				<h6> &copy; AmcoGit</h6>
+			</footer>
+		</div>
+	</body>
+</html>

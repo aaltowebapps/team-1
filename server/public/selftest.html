@@ -19,7 +19,9 @@
 				// All files that should work, with additional JSLint settings
 				{"file": "index.html", "jslint": SelfTest.JSLINT_OPTIONS_BROWSER},
 				{"file": "tracker.js", "jslint": jslintGoogleMaps},
-				{"file": "selftest.html", "jslint": jslintSelftest}
+				{"file": "api/gps.js", "jslint": {"vars": true, "predef": ["GpsApi", "console"]}},
+				{"file": "status.html", "jslint": SelfTest.JSLINT_OPTIONS_BROWSER},
+                {"file": "selftest.html", "jslint": jslintSelftest}
 				// You cannot test the selftest itself: "selftest/selftest.js"
 			]);
 		</script>
