@@ -32,6 +32,8 @@ GpsApi.prototype.start = function () {
     // Do nothing if this was already started
     if (this.watcherId) { return; }
 
+    var that = this;
+
     var positionCallback = function (coordinates) {
         if (!coordinates || !coordinates.coords) {
             console.error("GpsApi.prototype.start->positionCallback: No coordinates provided!");
@@ -68,7 +70,7 @@ GpsApi.prototype.start = function () {
         }
 
         // Store the sample
-        this.samples.push(sample);
+        that.samples.push(sample);
     };
 
     var positionErrorCallback = function (error) {
