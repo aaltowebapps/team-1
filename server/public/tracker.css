@@ -1,23 +1,23 @@
-﻿#toggleTracking {
-	display: block;
-	height: 40px;
-	border: 1px solid black;
-	border-radius: 5px;
+﻿
+#trackingStatus {
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #666;
+	padding-left: 1em;
 }
-
-#coordsBox {
-	margin: 0.5em;
-	padding: 0.5em;
-	border: 2px solid #666;
-	border-radius: 1em;
+#coordsBox {	
 }
 
 #coordsBox h3 {
-	margin: 0.3em;
 }
 
+#coords {
+	border: 2px solid #666;
+	border-radius: 1em;
+}
 #coords > div {
 	border-top: 1px solid #888;
+	padding: 0.5em;
 }
 #coords > div:first-child {
 	border-top: none;

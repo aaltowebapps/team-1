@@ -68,6 +68,7 @@
 					timeout: 5000,
 					maximumAge: 1000
 				});
+				$("#trackingStatus").html('Tracking in progress...');
 			}
 		},
 
@@ -76,6 +77,7 @@
 				navigator.geolocation.clearWatch(watcherId);
 				watcherId = null;
 			}
+			$("#trackingStatus").html('Not tracking.');
 		},
 
 		positionCallback: function (coordinates) {
