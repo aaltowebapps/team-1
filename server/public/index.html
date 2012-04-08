@@ -13,8 +13,7 @@
 	<script type="text/javascript">
 		'use strict';
 		$(document).ready(function () {
-			tracker.setDebugCoordsList($("#coords"));
-			tracker.initializeGoogleMaps("map_canvas", 60.186652, 24.82187);
+			tracker.initializeMap("map_canvas", 60.186652, 24.82187, { debugCoordinates: $("#coords") });
 			$('#toggleTracking').click(function () {
 				tracker.toggleTracking();
 			});
