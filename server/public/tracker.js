@@ -2,7 +2,7 @@
 	'use strict';
 
 	var trackerSettings = {
-		intervalTime: 1000,
+	//		intervalTime: 1000,
 		routeLineDiff: 5000,
 		debugCoordinates: null,
 		debugMaxAmount: 15,
@@ -14,7 +14,6 @@
 	var routeLine = null;
 	var watcherId = null;
 	var lastTimeStamp = 0; // not in use yet
-	//	var intervalTime = 1000; // not in use
 	var tracker = function () {
 
 		function initialize() {
@@ -46,7 +45,9 @@
 						children.last().removeClass(cssClass).hide('slow').detach();
 						children = children.slice(0, children.length - 1);
 					}
-					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + '</div>');
+					var diff = coordinates.timestamp - lastTimeStamp;
+					lastTimeStamp = coordinates.timestamp;
+					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + ', diffToPrev: ' + diff + '</div>');
 					trackerSettings.debugCoordinates.prepend($item);
 					$item.addClass(cssClass).hide().show('slow');
 				}
@@ -80,8 +81,8 @@
 		}
 
 		function positionCallback(coordinates) {
-			tracker.coordinatesToList(coordinates);
-			tracker.drawRoute();
+			coordinatesToList(coordinates);
+			drawRoute();
 		}
 
 		function positionErrorCallback(error) {
