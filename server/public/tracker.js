@@ -18,8 +18,7 @@
 	var tracker = function () {
 
 		function initialize() {
-			if (console)
-			{
+			if (console) {
 				console.debug("Tracker initialized.");
 			}
 		}
@@ -40,13 +39,10 @@
 		function coordinatesToList(coordinates) {
 			var i;
 			var cssClass = 'debugCoord';
-			if (coordinates && coordinates.coords && coordinates.timestamp)
-			{
-				if (trackerSettings.debugCoordinates)
-				{
+			if (coordinates && coordinates.coords && coordinates.timestamp) {
+				if (trackerSettings.debugCoordinates) {
 					var children = trackerSettings.debugCoordinates.children('.' + cssClass);
-					for (i = children.length - trackerSettings.debugMaxAmount; i > 0; i = i - 1)
-					{
+					for (i = children.length - trackerSettings.debugMaxAmount; i > 0; i = i - 1) {
 						children.last().removeClass(cssClass).hide('slow').detach();
 						children = children.slice(0, children.length - 1);
 					}
@@ -59,10 +55,8 @@
 		}
 
 		function drawRoute() {
-			if (googleMap)
-			{
-				if (!routeLine)
-				{
+			if (googleMap) {
+				if (!routeLine) {
 					routeLine = new google.maps.Polyline({
 						strokeColor: "#0000FF",
 						strokeOpacity: 1.0,
@@ -73,8 +67,7 @@
 				var arr = [];
 				var last = 0;
 				$.each(coordinateStorage, function (index, item) {
-					if (item.timestamp - last > trackerSettings.routeLineDiff)
-					{
+					if (item.timestamp - last > trackerSettings.routeLineDiff) {
 						// Draw point only if time diff to last point is bigger that routeLineDiff-setting
 						arr.push(new google.maps.LatLng(item.coords.latitude, item.coords.longitude));
 					}
@@ -92,12 +85,10 @@
 		}
 
 		function positionErrorCallback(error) {
-			if (error && error.code && error.message)
-			{
+			if (error && error.code && error.message) {
 				var $errorNote = $("body").children('.errorNote');
 				var errorStr = 'Error (' + error.code + '): ' + error.message;
-				if (!$errorNote)
-				{
+				if (!$errorNote) {
 					$errorNote = $('<div>' + errorStr + '</div>');
 					$errorNote.addClass('errorNote');
 					$("body").append($errorNote);
@@ -107,8 +98,7 @@
 		}
 
 		function startPolling() {
-			if (navigator)
-			{
+			if (navigator) {
 				watcherId = navigator.geolocation.watchPosition(positionCallback, positionErrorCallback, {
 					enableHighAccuracy: true,
 					timeout: 5000,
@@ -119,8 +109,7 @@
 		}
 
 		function stopPolling() {
-			if (navigator && watcherId !== null)
-			{
+			if (navigator && watcherId !== null) {
 				navigator.geolocation.clearWatch(watcherId);
 				watcherId = null;
 			}
@@ -132,8 +121,7 @@
 		return {
 			initializeMap: function (domId, centerLat, centerLng, settings) {
 				initializeGoogleMaps(domId, centerLat, centerLng);
-				if (settings)
-				{
+				if (settings) {
 					changeSettings(settings);
 				}
 			},
@@ -159,11 +147,9 @@
 			},
 
 			toggleTracking: function () {
-				if (watcherId !== null)
-				{
+				if (watcherId !== null) {
 					stopPolling();
-				} else
-				{
+				} else {
 					startPolling();
 				}
 			}
@@ -171,4 +157,4 @@
 	};
 
 	window.tracker = tracker();
-} ());
+}());
