@@ -1,11 +1,12 @@
 // Create a GpsApi that uses 'geolocation' to access the GPS
-GpsApi = function (geolocation) {
+GpsApi = function (geolocation, localStorage) {
     'use strict';
 
     // TODO: Add protection for calling the constructor without 'new'
-    // if () return new GpsApi(geolocation);
+    // if () return new GpsApi(geolocation, localStorage);
 
     this.geolocation = geolocation;
+    this.localStorage = localStorage;
     this.watcherId = undefined;
     this.watchOptions = {
         enableHighAccuracy: true,
@@ -50,12 +51,6 @@ GpsApi.prototype.start = function () {
             "spd": coordinates.coords.speed
         };
 
-        if (!sample.alt) {
-            // The altitude is missing, 
-            // TODO: get it from Google Elevantion API
-            sample.alt = 0;
-        }
-
         if (!sample.spd) {
             // The speed is missing, 
             // TODO: determine the difference with the previous sample
@@ -93,4 +88,50 @@ GpsApi.prototype.stop = function () {
 
     this.geolocation.clearWatch(this.watcherId);
 
+};
+
+// Store the GPS track to the local storage
+GpsApi.prototype.store = function () {
+    'use strict';
+
+    var sampleToString = function (sample) {
+        return sample.ts + ";" + sample.lat + ";" + sample.lng + ";" + sample.alt + ";" + sample.dir + ";" + sample.spd;
+    };
+
+    var blob = "";
+    var i;
+    for (i = 0; i < this.samples.length; i += 1) {
+        if (i > 0) { blob = blob + "|"; }
+        blob = blob + sampleToString(this.samples[i]);
+    }
+
+    this.localStorage.samples = blob;
+};
+
+// Load the GPS from the local storage, resets the current samples
+GpsApi.prototype.load = function () {
+    'use strict';
+
+    this.reset();
+
+    if (!this.localStorage.samples) { return; }
+
+    var stringToSample = function (sampleAsString) {
+        var sampleAsList = sampleAsString.split(";");
+        var sample = {
+            "ts": parseFloat(sampleAsList[0]),
+            "lat": parseFloat(sampleAsList[1]),
+            "lng": parseFloat(sampleAsList[2]),
+            "alt": parseFloat(sampleAsList[3]),
+            "dir": parseFloat(sampleAsList[4]),
+            "spd": parseFloat(sampleAsList[5])
+        };
+        return sample;
+    };
+
+    var samplesAsList = this.localStorage.samples.split("|");
+    var i;
+    for (i = 0; i < samplesAsList.length; i += 1) {
+        this.samples.push(stringToSample(samplesAsList[i]));
+    }
 };
