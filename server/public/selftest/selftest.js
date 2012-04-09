@@ -7,7 +7,7 @@ var SelfTest = {
 	JSLINT_OPTIONS_BROWSER: {
 		"browser": true,
 		"vars": true,
-		"predef": ["$", "tracker", "GpsApi"]
+		"predef": ["$", "tracker", "console", "GpsApi"]
 	},
 	// JSLint settings for code that is ran on Node.js
 	JSLINT_OPTIONS_NODEJS: {
