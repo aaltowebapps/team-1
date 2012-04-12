@@ -90,8 +90,8 @@ GpsApi.prototype.stop = function () {
 
 };
 
-// Store the GPS track to the local storage
-GpsApi.prototype.store = function () {
+// Get the samples as a base64 encoded blob
+GpsApi.prototype.toBase64 = function () {
     'use strict';
 
     var sampleToString = function (sample) {
@@ -105,16 +105,14 @@ GpsApi.prototype.store = function () {
         blob = blob + sampleToString(this.samples[i]);
     }
 
-    this.localStorage.samples = blob;
+    return blob;
 };
 
-// Load the GPS from the local storage, resets the current samples
-GpsApi.prototype.load = function () {
+// Populate the samples from a base64 encoded blob
+GpsApi.prototype.fromBase64 = function (blob) {
     'use strict';
 
     this.reset();
-
-    if (!this.localStorage.samples) { return; }
 
     var stringToSample = function (sampleAsString) {
         var sampleAsList = sampleAsString.split(";");
@@ -129,9 +127,27 @@ GpsApi.prototype.load = function () {
         return sample;
     };
 
-    var samplesAsList = this.localStorage.samples.split("|");
+    var samplesAsList = blob.split("|");
     var i;
     for (i = 0; i < samplesAsList.length; i += 1) {
         this.samples.push(stringToSample(samplesAsList[i]));
     }
+};
+
+// Store the GPS track to the local storage
+GpsApi.prototype.store = function () {
+    'use strict';
+
+    this.localStorage.samples = this.toBase64();
+};
+
+// Load the GPS from the local storage, resets the current samples
+GpsApi.prototype.load = function () {
+    'use strict';
+
+    this.reset();
+
+    if (!this.localStorage.samples) { return; }
+
+    this.fromBase64(this.localStorage.samples);
 };
