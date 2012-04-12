@@ -15,41 +15,41 @@ var geolocationMock = {
 
 
 describe("GpsApi.reset()", function() {
-	it("samples removed", function() {
+    it("samples removed", function() {
         var gps = new GpsApi(geolocationMock);
-		expect(gps.samples).toEqual([]);
+        expect(gps.samples).toEqual([]);
         gps.samples = [1,2,3];
         expect(gps.samples).toNotEqual([]);
         gps.reset();
-		expect(gps.samples).toEqual([]);
-	});
+        expect(gps.samples).toEqual([]);
+    });
 
-	it("stops existing watch", function() {
+    it("stops existing watch", function() {
         var gps = new GpsApi(geolocationMock);
         geolocationMock.watcherId = 123;
         gps.start();
-		expect(geolocationMock.watcherId).toEqual(123);
+        expect(geolocationMock.watcherId).toEqual(123);
         geolocationMock.watcherId = 321;
-		expect(geolocationMock.watcherId).toEqual(321);
+        expect(geolocationMock.watcherId).toEqual(321);
         gps.reset();
-		expect(geolocationMock.watcherId).toEqual(123);
+        expect(geolocationMock.watcherId).toEqual(123);
 
-	});
+    });
 });
 
 describe("GpsApi.start()", function() {
-	it("enables high accuracy", function() {
+    it("enables high accuracy", function() {
         var gps = new GpsApi(geolocationMock);
         geolocationMock.watchOptions = undefined;
         gps.start();
-		expect(geolocationMock.watchOptions.enableHighAccuracy).toEqual(true);
-	});
+        expect(geolocationMock.watchOptions.enableHighAccuracy).toEqual(true);
+    });
 
-	it("stores samples", function() {
+    it("stores samples", function() {
         var gps = new GpsApi(geolocationMock);
         geolocationMock.positionCallback = undefined;
         gps.start();
-		expect(typeof geolocationMock.positionCallback).toEqual("function");
+        expect(typeof geolocationMock.positionCallback).toEqual("function");
         // Simulate a GPS callback
         var sample = {
             "timestamp": 123,
@@ -78,16 +78,16 @@ describe("GpsApi.start()", function() {
 });
 
 describe("GpsApi.stop()", function() {
-	it("stops correct watcherId", function() {
+    it("stops correct watcherId", function() {
         var gps = new GpsApi(geolocationMock);
         geolocationMock.watcherId = 123;
         gps.start();
-		expect(geolocationMock.watcherId).toEqual(123);
+        expect(geolocationMock.watcherId).toEqual(123);
         geolocationMock.watcherId = 321;
-		expect(geolocationMock.watcherId).toEqual(321);
+        expect(geolocationMock.watcherId).toEqual(321);
         gps.stop();
-		expect(geolocationMock.watcherId).toEqual(123);
-	});
+        expect(geolocationMock.watcherId).toEqual(123);
+    });
 });
 
 
@@ -133,12 +133,12 @@ describe("GpsApi.toBase64() and GpsApi.fromBase64()", function() {
 
 
 describe("GpsApi.store() and GpsApi.load()", function() {
-	it("same samples after storing and loading", function() {
+    it("same samples after storing and loading", function() {
         var stubStorageObject = {};
         var gps = new GpsApi(geolocationMock, stubStorageObject);
         geolocationMock.positionCallback = undefined;
         gps.start();
-		expect(typeof geolocationMock.positionCallback).toEqual("function");
+        expect(typeof geolocationMock.positionCallback).toEqual("function");
         // Simulate a GPS callback
         var sample = {
             "timestamp": 123,
@@ -169,6 +169,6 @@ describe("GpsApi.store() and GpsApi.load()", function() {
         expect(gps.samples[1].ts).toEqual(321);
         expect(gps.samples[1].lat).toEqual(54.321);
         expect(gps.samples[1].lng).toEqual(9.876);
-	});
+    });
 });
 
