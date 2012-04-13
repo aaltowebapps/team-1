@@ -23,8 +23,21 @@ function getTrackInfo(req, res){
 	res.json(tracks);
 };
 
+function setTrackInfo(req, res){
+	// TODO: Check if 'req.params.user' is logged in
+	//       and has access to 'req.params.track'
+	// setTrackInfo(req.params.track)
+	req.on('data', function(chunk) {
+		console.log("Received body data:");
+		console.log(chunk.toString());
+	});
+	res.json(true);
+};
+
+
 // This function registers the 'track' API
 exports.registerApi = function (app) {
 	app.get("/track/:user", getTracksForUser);
 	app.get("/track/:user/:track", getTrackInfo);
+	app.post("/track/:user/:track", setTrackInfo);
 };

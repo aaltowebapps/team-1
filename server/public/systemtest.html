@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>System Test</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" type="text/css" />
+		<link rel="stylesheet" href="tracker.css" type="text/css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
+		<script type="text/javascript" src="api/gps.js"></script>
+		<script type="text/javascript" src="api/track.js"></script>
+		<script type="text/javascript">
+		function runSystemTest() {
+			'use strict';
+
+			// A mock geolocation for testing
+			var geolocationMock = {
+				watchOptions: undefined,
+				positionCallback: undefined,
+				watcherId: 0,
+				watchPosition: function (positionCallback, positionErrorCallback, watchOptions) {
+					this.positionCallback = positionCallback;
+					this.watchOptions = watchOptions;
+					return this.watcherId;
+				},
+				clearWatch: function (watcherId) {
+					this.watcherId = watcherId;
+				}
+			};
+			
+
+			// Set up the GpsApi and create a Track
+			var xmlHttpRequest = new XMLHttpRequest();
+			var gps = new GpsApi(geolocationMock);
+			var track = new Track(gps, xmlHttpRequest);
+			// Start the track
+			track.start();
+
+			// Simulate two GPS callbacks
+			var sample = {
+				"timestamp": 123,
+				"coords": {
+					"latitude": 12.345,
+					"longitude": 67.89,
+					"altitude": 135,
+					"speed": 79,
+					"heading": 24
+				}
+			};
+			geolocationMock.positionCallback(sample);
+			sample.timestamp = 321;
+			sample.coords.latitude = 54.321;
+			sample.coords.longitude = 9.876;
+			geolocationMock.positionCallback(sample);
+
+			// Now send this track to the backend
+			track.save("track_name");
+		}
+		</script>
+	</head>
+	<body>
+		<div id="main">
+			<header>
+				<h1>System Test</h1>
+			</header>
+			<div class="content">
+			This script tests the whole system, it simulates the geolocation API and stores the track on the server.<br />
+			<button type="button" onclick="runSystemTest()">Run System Test</button>
+			</div>
+			<footer>
+				<h6> &copy; AmcoGit</h6>
+			</footer>
+		</div>
+	</body>
+</html>
