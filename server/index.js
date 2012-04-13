@@ -2,13 +2,6 @@
 // * node.js
 // * npm install express
 
-/*
-// The server configuration
-var configuration = {
-	PORT: 8080, 
-	ROOT: __dirname + "/public"
-	};
-	*/
 
 // Required modules
 var express = require('express');
