@@ -7,7 +7,7 @@ Track = function (gpsApi, xmlHttpRequest) {
 
     this.gpsApi = gpsApi;
     this.xmlHttpRequest = xmlHttpRequest;
-    this.serverUrl = "http://localhost/";
+    this.serverUrl = "http://localhost:8080/track/UID123/";
 
     return this;
 };
@@ -35,7 +35,7 @@ Track.prototype.save = function (name) {
     var data = this.gpsApi.toBase64();
 
     // Send the track to the backend
-    this.xmlHttpRequest.open("POST", this.serverUrl, false);
+    this.xmlHttpRequest.open("POST", this.serverUrl + name + "/", false);
     this.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
     this.xmlHttpRequest.setRequestHeader("Content-Length", data.length);
     this.xmlHttpRequest.send(data);
