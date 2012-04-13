@@ -23,7 +23,7 @@ Track.prototype.start = function () {
     this.gpsApi.start();
 };
 
-// Store the track in the backend
+// Save the track on the backend
 Track.prototype.save = function (name) {
     'use strict';
 

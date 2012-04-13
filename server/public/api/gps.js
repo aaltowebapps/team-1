@@ -1,12 +1,11 @@
 // Create a GpsApi that uses 'geolocation' to access the GPS
-GpsApi = function (geolocation, localStorage) {
+GpsApi = function (geolocation) {
     'use strict';
 
     // TODO: Add protection for calling the constructor without 'new'
-    // if () return new GpsApi(geolocation, localStorage);
+    // if () return new GpsApi(geolocation);
 
     this.geolocation = geolocation;
-    this.localStorage = localStorage;
     this.watcherId = undefined;
     this.watchOptions = {
         enableHighAccuracy: true,
@@ -132,22 +131,4 @@ GpsApi.prototype.fromBase64 = function (blob) {
     for (i = 0; i < samplesAsList.length; i += 1) {
         this.samples.push(stringToSample(samplesAsList[i]));
     }
-};
-
-// Store the GPS track to the local storage
-GpsApi.prototype.store = function () {
-    'use strict';
-
-    this.localStorage.samples = this.toBase64();
-};
-
-// Load the GPS from the local storage, resets the current samples
-GpsApi.prototype.load = function () {
-    'use strict';
-
-    this.reset();
-
-    if (!this.localStorage.samples) { return; }
-
-    this.fromBase64(this.localStorage.samples);
 };
