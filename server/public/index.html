@@ -1,37 +1,76 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>GPS Tracker</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.css" />
-		<link rel="stylesheet" href="tracker.css" />
-		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
-		<script type="text/javascript" src="tracker.js"></script>
-		<script type="text/javascript">
-			'use strict';
-			$(document).ready(function () {
-				tracker.setDebugCoordsList($("#coords"));
-				$('#toggleTracking').click(function () {
-					tracker.toggleTracking();
-				});
+<head>
+	<title>GPS Tracker</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"
+		type="text/css" />
+	<link rel="stylesheet" href="tracker.css" type="text/css" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.js"></script>
+	<script type="text/javascript" src="tracker.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript">
+		'use strict';
+		$(document).ready(function () {
+			tracker.initializeMap("map_canvas", 60.186652, 24.82187, { debugCoordinates: $("#coords") });
+			$('#toggleTracking').click(function () {
+				tracker.toggleTracking();
 			});
-		</script>
-	</head>
-	<body>
-		<div id="main">
-			<header>
-				<h1>GPS Tracker</h1>
-			</header>
-			<div class="content">
-				<a id="toggleTracking" href="#">Start/Stop tracking</a>
-				<div id="coords">
-					
+		});
+	</script>
+</head>
+<body>
+	<div id="main" data-role="page" data-theme="b">
+		<header data-role="header">
+			<h1>
+				GPS Tracker
+			</h1>
+			<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+				Settings
+			</a>
+		</header>
+		<div class="content" data-role="content">
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a id="toggleTracking" href="#" data-role="button">Start/Stop</a>
+				</div>
+				<div class="ui-block-b">
+					<p id="trackingStatus" class="ui-corner-all">
+						Not tracking.
+					</p>
 				</div>
 			</div>
-			<footer>
-				<h6></h6>
-			</footer>
+			<div id="map_canvas">
+			</div>
+			<div id="coordsBox" data-role="collapsible" data-theme="a">
+				<h3>
+					Coordinates (debugging purposes)</h3>
+				<p id="coords">
+				</p>
+			</div>
 		</div>
-	</body>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+	
+	<div id="settingsDialog" data-role="page" data-add-back-btn="true">
+		<header data-role="header">
+			<h1>Settings</h1>
+		</header>
+		<div class="content" data-role="content">
+			<p>
+				TODO: Change settings here
+			</p>
+		</div>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+</body>
 </html>

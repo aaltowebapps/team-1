@@ -1,6 +1,21 @@
 'use strict';
 
-var SelfTest = {filenames: []};
+var SelfTest = {
+	// 
+	testset: [],
+	// JSLint settings for code that is ran in the browser
+	JSLINT_OPTIONS_BROWSER: {
+		"browser": true,
+		"vars": true,
+		"predef": ["$", "tracker", "console", "GpsApi"]
+	},
+	// JSLint settings for code that is ran on Node.js
+	JSLINT_OPTIONS_NODEJS: {
+		"browser": false,
+		"vars": true,
+		"predef": ["$"]
+	}
+};
 
 SelfTest.readFile = function (filename) {
 	var xmlhttp;
@@ -28,13 +43,13 @@ SelfTest.writeDependencies = function (filenames) {
 }
 
 SelfTest.registerFiles = function (filenames) {
-	SelfTest.filenames = filenames;
+	SelfTest.testset = filenames;
 
 	SelfTest.writeDependencies();
 
 	var filename;
-	for (var i = 0; i < SelfTest.filenames.length; i++) {
-		filename = SelfTest.filenames[i];
+	for (var i = 0; i < SelfTest.testset.length; i++) {
+		filename = SelfTest.testset[i].file;
 		if (filename.indexOf(".js", filename.length - 3) !== -1) {
 			// Load the script itself
 			document.write("<script src=\"" + filename + "\"></script>");
@@ -50,13 +65,15 @@ SelfTest.execute = function () {
 }
 
 SelfTest.executeJslint = function () {
-	SelfTest.writeJslintBanner();
-	document.write("<div class=\"show-passed\">");
 	var filename;
 	var content;
-	var options = null;
-	for (var i = 0; i < SelfTest.filenames.length; i++) {
-		filename = SelfTest.filenames[i];
+	var options;
+
+	SelfTest.writeJslintBanner();
+	document.write("<div class=\"show-passed\">");
+	for (var i = 0; i < SelfTest.testset.length; i++) {
+		filename = SelfTest.testset[i].file;
+		options = SelfTest.testset[i].jslint;
 		content = SelfTest.readFile(filename);
 		if (content === undefined) {
 			SelfTest.writeCouldNotLoadFile(filename);

@@ -3,15 +3,26 @@
 	<head>
 		<title>Test</title>
 		<link rel="stylesheet" href="selftest/external/jasmine/jasmine.css" />
+		<script type="text/javascript" src="jquery.js"></script>
 		<script src="selftest/selftest.js"></script>
 
 		<script>
-			var SelfTest;
+			// In selftests we depend on "SelfTest"
+			var jslintSelftest = SelfTest.JSLINT_OPTIONS_BROWSER;
+			jslintSelftest.predef.push("SelfTest");
+
+			// In some files we use the "Google Maps API"
+			var jslintGoogleMaps = SelfTest.JSLINT_OPTIONS_BROWSER;
+			jslintGoogleMaps.predef.push("google");
+
 			SelfTest.registerFiles([
-				// All files that should work
-				"index.html",
-				"tracker.js",
-				"selftest.html"
+				// All files that should work, with additional JSLint settings
+				{"file": "index.html", "jslint": SelfTest.JSLINT_OPTIONS_BROWSER},
+				{"file": "tracker.js", "jslint": jslintGoogleMaps},
+				{"file": "api/gps.js", "jslint": {"vars": true, "predef": ["GpsApi", "console"]}},
+				{"file": "api/track.js", "jslint": {"vars": true, "predef": ["GpsApi", "Track", "console"]}},
+				// {"file": "status.html", "jslint": SelfTest.JSLINT_OPTIONS_BROWSER},
+                {"file": "selftest.html", "jslint": jslintSelftest}
 				// You cannot test the selftest itself: "selftest/selftest.js"
 			]);
 		</script>
