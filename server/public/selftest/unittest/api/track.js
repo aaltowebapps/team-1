@@ -61,7 +61,10 @@ describe("Track.save()", function() {
         // The required order to get the right data
         expect(gpsApiMock.trace).toEqual(["stop()", "toBase64()", "reset()"]);
         // Verify that it sends the correct data to the server
-        // TODO: Improve this such that it doesn't care about the server and the undefined variables.
-        expect(xmlHttpRequestMock.trace).toEqual(["open('POST', 'http://localhost/', 'false', 'undefined', 'undefined')", "setRequestHeader('Content-type', 'application/json')", "setRequestHeader('Content-Length', '" + gpsApiMock.valueBase64.length + "')", "send('" + gpsApiMock.valueBase64 + "')"]);
+        expect(xmlHttpRequestMock.trace.length).toEqual(4);
+        expect(xmlHttpRequestMock.trace[0]).toMatch(/^open\('POST', '[^']+', 'false'/);
+        expect(xmlHttpRequestMock.trace[1]).toEqual("setRequestHeader('Content-type', 'application/json')");
+        expect(xmlHttpRequestMock.trace[2]).toEqual("setRequestHeader('Content-Length', '" + gpsApiMock.valueBase64.length + "')");
+        expect(xmlHttpRequestMock.trace[3]).toEqual("send('" + gpsApiMock.valueBase64 + "')");
     });
 });
