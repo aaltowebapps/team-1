@@ -132,3 +132,22 @@ GpsApi.prototype.fromBase64 = function (blob) {
         this.samples.push(stringToSample(samplesAsList[i]));
     }
 };
+
+// Get the current status (the last GPS sample)
+GpsApi.prototype.status = function () {
+    'use strict';
+
+    if (this.samples.length < 1) { return; }
+
+    // Convert the sample format
+    var sample = this.samples[this.samples.length - 1];
+    var coordinates = {
+        latitude: sample.lat,
+        longitude: sample.lng,
+        altitude: sample.alt,
+        heading: sample.dir,
+        speed: sample.spd
+    };
+
+    return coordinates;
+};

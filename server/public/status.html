@@ -11,19 +11,28 @@
 		<script type="text/javascript">
 			'use strict';
 
-            var gps = new GpsApi(navigator.geolocation);
-            gps.start();
-            // gps.stop();
+			// TODO: Normally we would have one instance thta is shared in the whole aopp.
+			var gps = new GpsApi(navigator.geolocation);
+			gps.start();
 
-            /*
 			$(document).ready(function () {
-				tracker.setDebugCoordsList($("#coords"));
-				tracker.initializeGoogleMaps("map_canvas", 60.186652, 24.82187);
-				$('#toggleTracking').click(function () {
-					tracker.toggleTracking();
-				});
+
+				var updateCoordinates = function () {
+					console.info("updateCoordinates");
+					var coord = gps.status();
+					if (coord) {
+						$("#latitude").val(coord.latitude);
+						$("#longitude").val(coord.longitude);
+						$("#altitude").val(coord.altitude);
+
+						$("#speed").val(coord.speed);
+						$("#heading").val(coord.heading);
+					}
+					setTimeout(updateCoordinates, 2000);
+				}
+				updateCoordinates();
 			});
-            */
+
 		</script>
 	</head>
 	<body>
@@ -33,15 +42,15 @@
 			</header>
 			<div class="content">
                 <h3>Coordinates</h3>
-                <label for="latitude">Latitude:</label><input id="latitude" value="?"></input><br/>
-                <label for="longitude">Longitude:</label><input id="longitude" value="?"></input><br/>
-                <label for="altitude">Altitude:</label><input id="altitude" value="?"></input><br/>
+                <label for="latitude">Latitude:</label><input id="latitude" readonly="readonly" value="?"></input><br/>
+                <label for="longitude">Longitude:</label><input id="longitude" readonly="readonly" value="?"></input><br/>
+                <label for="altitude">Altitude:</label><input id="altitude" readonly="readonly" value="?"></input><br/>
                 <h3>Misc</h3>
-                <label for="speed">Speed:</label><input id="speed" value="?"></input><br/>
-                <label for="heading">Heading:</label><input id="heading" value="?"></input><br/>
-                <h3>Accuracy</h3>
-                <label for="coordinates">Coordinates:</label><input id="coordinates" value="?"></input><br/>
-                <label for="altitudeAccuracy">Altitude:</label><input id="altitudeAccuracy" value="?"></input><br/>
+                <label for="speed">Speed:</label><input id="speed" readonly="readonly" value="?"></input><br/>
+                <label for="heading">Heading:</label><input id="heading" readonly="readonly" value="?"></input><br/>
+                <!--h3>Accuracy</h3>
+                <label for="coordinates">Coordinates:</label><input id="coordinates" readonly="readonly" value="?"></input><br/>
+                <label for="altitudeAccuracy">Altitude:</label><input id="altitudeAccuracy" readonly="readonly" value="?"></input><br/-->
 			</div>
 			<footer>
 				<h6> &copy; AmcoGit</h6>

@@ -90,7 +90,6 @@ describe("GpsApi.stop()", function() {
     });
 });
 
-
 describe("GpsApi.toBase64() and GpsApi.fromBase64()", function() {
     it("same samples after a base64 round-trip", function() {
         var stubStorageObject = {};
@@ -131,3 +130,29 @@ describe("GpsApi.toBase64() and GpsApi.fromBase64()", function() {
     });
 });
 
+describe("GpsApi.status()", function() {
+    it("current status is equal to the last sample", function() {
+        var gps = new GpsApi(geolocationMock);
+        gps.start();
+        // Simulate a GPS callback
+        var sample = {
+            "timestamp": 123,
+            "coords": {
+                "latitude": 12.345,
+                "longitude": 67.89,
+                "altitude": 135,
+                "speed": 79,
+                "heading": 24
+            }
+        };
+        geolocationMock.positionCallback(sample);
+        expect(gps.status()).toEqual(sample.coords);
+        // The sample should be the current status
+        sample.timestamp = 321;
+        sample.coords.latitude = 54.321;
+        sample.coords.longitude = 9.876;
+        geolocationMock.positionCallback(sample);
+        // Now the second sample should be the current status
+        expect(gps.status()).toEqual(sample.coords);
+    });
+});
