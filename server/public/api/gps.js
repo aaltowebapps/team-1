@@ -2,8 +2,8 @@
 GpsApi = function (geolocation) {
     'use strict';
 
-    // TODO: Add protection for calling the constructor without 'new'
-    // if () return new GpsApi(geolocation);
+    // Add protection for calling the constructor without 'new'
+    if (!(this instanceof GpsApi)) { return new GpsApi(geolocation); }
 
     this.geolocation = geolocation;
     this.watcherId = undefined;
