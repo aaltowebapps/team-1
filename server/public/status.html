@@ -7,12 +7,14 @@
 		<link rel="stylesheet" href="tracker.css" type="text/css" />
 		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
+		<script type="text/javascript" src="selftest/mock/geolocation_mock.js"></script>
 		<script type="text/javascript" src="api/gps.js"></script>
 		<script type="text/javascript">
 			'use strict';
 
-			// TODO: Normally we would have one instance thta is shared in the whole aopp.
-			var gps = new GpsApi(navigator.geolocation);
+			// TODO: Normally we would have one instance that is shared in the whole aopp.
+			var gps = new GpsApi(new GeolocationMock());
+			// var gps = new GpsApi(navigator.geolocation);
 			gps.start();
 
 			$(document).ready(function () {
