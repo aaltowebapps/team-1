@@ -16,6 +16,13 @@
 			var gps = new GpsApi(new GeolocationMock());
 			var track = new Track(gps, xmlHttpRequest);
 
+			$(document).ready(function () {
+				var updateTrack = function () {
+					$("#trackData").text(gps.toBase64());
+				}
+				setInterval(updateTrack, 500);
+			});
+
 			function startTracking() {
 				'use strict';
 				//$("#startButton").prop('disabled', true);
@@ -30,6 +37,16 @@
 				// Save the track at the server
 				track.save("track_name");
 			}
+			function loadTrack() {
+				'use strict';
+				// Load the track at the server
+				track.load("track_name");
+			}
+			function listTracks() {
+				'use strict';
+				// List the tracks available at the server
+				// track.listTracks();
+			}
 		</script>
 	</head>
 	<body>
@@ -40,7 +57,10 @@
 			<div class="content">
 			This script tests the whole system, it simulates the geolocation API and stores the track on the server.<br />
 			<button type="button" onclick="startTracking()" id="startButton">Start Tracking</button><br/>
-			<button type="button" onclick="saveTrack()" id="saveButton">Save To Server</button>
+			<button type="button" onclick="saveTrack()" id="saveButton">Save To Server</button><br/>
+			<button type="button" onclick="loadTrack()" id="loadButton">Load From Server</button><br/>
+			<button type="button" onclick="listTracks()" id="listButton">Get Track List From Server</button><br/>
+			<div id="trackData"></div>
 			</div>
 			<footer>
 				<h6> &copy; AmcoGit</h6>
