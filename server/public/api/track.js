@@ -42,3 +42,16 @@ Track.prototype.save = function (name) {
 
     this.gpsApi.reset();
 };
+
+// Load the track from the backend
+Track.prototype.load = function (name) {
+    'use strict';
+
+    // This requires the GpsApi
+    if (!this.gpsApi) { return; }
+
+    // Send the track to the backend
+    this.xmlHttpRequest.open("GET", this.serverUrl + name + "/", false);
+    var data = this.xmlHttpRequest.responseText;
+    this.gpsApi.fromBase64(data);
+};

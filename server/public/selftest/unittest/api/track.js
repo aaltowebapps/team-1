@@ -29,6 +29,7 @@ var gpsApiMock = {
 // A mock XMLHttpRequest for testing
 var xmlHttpRequestMock = {
     trace: [],
+    responseText: "",
     open: function (method, url, asynchronous, username, password) {
         this.trace.push("open('" + method + "', '" + url + "', '" + asynchronous + "', '" + username + "', '" + password + "')");
     },
@@ -57,6 +58,7 @@ describe("Track.save()", function() {
         track = new Track(gpsApiMock, xmlHttpRequestMock);
         track.start();
         gpsApiMock.trace = [];
+        xmlHttpRequestMock.trace = [];
         track.save("track name");
         // The required order to get the right data
         expect(gpsApiMock.trace).toEqual(["stop()", "toBase64()", "reset()"]);
@@ -66,5 +68,20 @@ describe("Track.save()", function() {
         expect(xmlHttpRequestMock.trace[1]).toEqual("setRequestHeader('Content-type', 'application/json')");
         expect(xmlHttpRequestMock.trace[2]).toEqual("setRequestHeader('Content-Length', '" + gpsApiMock.valueBase64.length + "')");
         expect(xmlHttpRequestMock.trace[3]).toEqual("send('" + gpsApiMock.valueBase64 + "')");
+    });
+});
+
+describe("Track.load()", function() {
+    it("stops tracking, gts data from the server, and stores the data in the GpsApi", function() {
+        xmlHttpRequestMock.responseText = "base64value";
+        track = new Track(gpsApiMock, xmlHttpRequestMock);
+        gpsApiMock.trace = [];
+        xmlHttpRequestMock.trace = [];
+        track.load("track name");
+        // The required order to clear the old data and set the the right data
+        expect(gpsApiMock.trace).toEqual(["fromBase64('" + xmlHttpRequestMock.responseText + "')"]);
+        // Verify that it sends the correct data to the server
+        expect(xmlHttpRequestMock.trace.length).toEqual(1);
+        expect(xmlHttpRequestMock.trace[0]).toMatch(/^open\('GET', '[^']+', 'false'/);
     });
 });
