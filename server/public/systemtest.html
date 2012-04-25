@@ -9,53 +9,27 @@
 		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.js"></script>
 		<script type="text/javascript" src="api/gps.js"></script>
 		<script type="text/javascript" src="api/track.js"></script>
+		<script type="text/javascript" src="selftest/mock/geolocation_mock.js"></script>
 		<script type="text/javascript">
-		function runSystemTest() {
-			'use strict';
-
-			// A mock geolocation for testing
-			var geolocationMock = {
-				watchOptions: undefined,
-				positionCallback: undefined,
-				watcherId: 0,
-				watchPosition: function (positionCallback, positionErrorCallback, watchOptions) {
-					this.positionCallback = positionCallback;
-					this.watchOptions = watchOptions;
-					return this.watcherId;
-				},
-				clearWatch: function (watcherId) {
-					this.watcherId = watcherId;
-				}
-			};
-			
-
 			// Set up the GpsApi and create a Track
 			var xmlHttpRequest = new XMLHttpRequest();
-			var gps = new GpsApi(geolocationMock);
+			var gps = new GpsApi(new GeolocationMock());
 			var track = new Track(gps, xmlHttpRequest);
-			// Start the track
-			track.start();
 
-			// Simulate two GPS callbacks
-			var sample = {
-				"timestamp": 123,
-				"coords": {
-					"latitude": 12.345,
-					"longitude": 67.89,
-					"altitude": 135,
-					"speed": 79,
-					"heading": 24
-				}
-			};
-			geolocationMock.positionCallback(sample);
-			sample.timestamp = 321;
-			sample.coords.latitude = 54.321;
-			sample.coords.longitude = 9.876;
-			geolocationMock.positionCallback(sample);
-
-			// Now send this track to the backend
-			track.save("track_name");
-		}
+			function startTracking() {
+				'use strict';
+				//$("#startButton").prop('disabled', true);
+				//$("#saveButton").prop('disabled', false);
+				// Start the track
+				track.start();
+			}
+			function saveTrack() {
+				'use strict';
+				//$("#startButton").prop('disabled', false);
+				//$("#saveButton").prop('disabled', true);
+				// Save the track at the server
+				track.save("track_name");
+			}
 		</script>
 	</head>
 	<body>
@@ -65,7 +39,8 @@
 			</header>
 			<div class="content">
 			This script tests the whole system, it simulates the geolocation API and stores the track on the server.<br />
-			<button type="button" onclick="runSystemTest()">Run System Test</button>
+			<button type="button" onclick="startTracking()" id="startButton">Start Tracking</button><br/>
+			<button type="button" onclick="saveTrack()" id="saveButton">Save To Server</button>
 			</div>
 			<footer>
 				<h6> &copy; AmcoGit</h6>
