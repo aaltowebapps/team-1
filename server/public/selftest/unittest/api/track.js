@@ -81,7 +81,8 @@ describe("Track.load()", function() {
         // The required order to clear the old data and set the the right data
         expect(gpsApiMock.trace).toEqual(["fromBase64('" + xmlHttpRequestMock.responseText + "')"]);
         // Verify that it sends the correct data to the server
-        expect(xmlHttpRequestMock.trace.length).toEqual(1);
+        expect(xmlHttpRequestMock.trace.length).toEqual(2);
         expect(xmlHttpRequestMock.trace[0]).toMatch(/^open\('GET', '[^']+', 'false'/);
+        expect(xmlHttpRequestMock.trace[1]).toEqual("send('undefined')");
     });
 });

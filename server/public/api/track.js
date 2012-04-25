@@ -52,6 +52,7 @@ Track.prototype.load = function (name) {
 
     // Send the track to the backend
     this.xmlHttpRequest.open("GET", this.serverUrl + name + "/", false);
+    this.xmlHttpRequest.send();
     var data = this.xmlHttpRequest.responseText;
     this.gpsApi.fromBase64(data);
 };
