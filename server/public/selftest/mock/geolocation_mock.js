@@ -9,6 +9,7 @@ GeolocationMock = function () {
     this.positionErrorCallback = undefined;
     this.watchOptions = undefined;
     this.watcherId = 123;
+    this.timerId = 0;
 
     var s = function(lat, lng, alt, spd, dir) {
         return {
@@ -92,7 +93,7 @@ GeolocationMock.prototype.watchPosition = function (positionCallback, positionEr
     var updateCoordinates = function () {
         that.getCurrentPosition(that.positionCallback, that.positionErrorCallback, that.watchOptions);
     }
-    setInterval(updateCoordinates, 1000);
+    this.timerId = setInterval(updateCoordinates, 1000);
 
     return this.watcherId;
 };
@@ -101,6 +102,7 @@ GeolocationMock.prototype.clearWatch = function (watcherId) {
     'use strict';
 
     if (watcherId == this.watcherId) {
+        clearInterval(this.timerId);
         this.positionCallback = undefined;
         this.positionErrorCallback = undefined;
         this.watchOptions = undefined;
