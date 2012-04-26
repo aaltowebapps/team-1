@@ -6,7 +6,7 @@
 		routeLineDiff: 0,
 		debugCoordinates: null,
 		debugMaxAmount: 15,
-		statusDom: null,
+		statusCallback: null,
 		followLocation: true,
 		routeLineOpts: {
 			strokeColor: "#0000FF",
@@ -84,31 +84,17 @@
 			}
 		}
 
-		function updateStatusPage() {
-			//					<li id="statusLatitude"></li>
-			//					<li id="statusLongitude"></li>
-			//					<li id="statusAccuracy"></li>
-			//					<li id="statusAltitude"></li>
-			//					<li id="statusAltitudeAccuracy"></li>
-			//					<li id="statusSpeed"></li>
-			//					<li id="statusHeading"></li>
-			if (trackerSettings.statusDom) {
-				var base = trackerSettings.statusDom;
+		function updateStatus() {
+			if (trackerSettings.statusCallback && $.isFunction(trackerSettings.statusCallback)) {
 				var last = coordinateStorage[coordinateStorage.length - 1];
-				base.find('#statusLatitude').html(last.coords.latitude);
-				base.find('#statusLongitude').html(last.coords.longitude);
-				base.find('#statusAccuracy').html(last.coords.accuracy);
-				base.find('#statusAltitude').html(last.coords.altitude);
-				base.find('#statusAltitudeAccuracy').html(last.coords.altitudeAccuracy);
-				base.find('#statusSpeed').html(last.coords.speed);
-				base.find('#statusHeading').html(last.coords.heading);
+				trackerSettings.statusCallback(last);
 			}
 		}
 
 		function positionCallback(coordinates) {
 			coordinatesToList(coordinates);
 			drawRoute();
-			updateStatusPage();
+			updateStatus();
 		}
 
 		function positionErrorCallback(error) {

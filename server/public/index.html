@@ -12,11 +12,23 @@
 		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
 			'use strict';
+
+			function updateStatusPage(last) {
+				var base = $('#trackerStatus');
+				base.find('#statusLatitude').html(last.coords.latitude);
+				base.find('#statusLongitude').html(last.coords.longitude);
+				base.find('#statusAccuracy').html(last.coords.accuracy);
+				base.find('#statusAltitude').html(last.coords.altitude);
+				base.find('#statusAltitudeAccuracy').html(last.coords.altitudeAccuracy);
+				base.find('#statusSpeed').html(last.coords.speed);
+				base.find('#statusHeading').html(last.coords.heading);
+			}
+
 			$(document).ready(function () {
 				try {
 					window.tracker.initializeMap("map_canvas", 60.186652, 24.82187,
 						{
-							statusDom: $('#trackerStatus'),
+							statusCallback: updateStatusPage,
 							debugCoordinates: $("#coords"),
 							routeLineOpts: {
 								strokeColor: "#0000FF",
