@@ -3,16 +3,23 @@
 
 	var trackerSettings = {
 	//		intervalTime: 1000,
-		routeLineDiff: 5000,
+		routeLineDiff: 0,
 		debugCoordinates: null,
 		debugMaxAmount: 15,
-		followLocation: true
+		statusCallback: null,
+		followLocation: true,
+		routeLineOpts: {
+			strokeColor: "#0000FF",
+			strokeOpacity: 1.0,
+			strokeWeight: 2
+		}
 	}; // Default settings. Changed with changeSettings-function
 
 	var coordinateStorage = [];
 	var googleMap = null;
 	var routeLine = null;
 	var watcherId = null;
+	var testIntervalId = null; // test var
 	var lastTimeStamp = 0; // not in use yet
 	var tracker = function () {
 
@@ -25,7 +32,7 @@
 		function initializeGoogleMaps(domId, centerLat, centerLng) {
 			var myOptions = {
 				center: new google.maps.LatLng(centerLat, centerLng),
-				zoom: 10,
+				zoom: 12,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 			googleMap = new google.maps.Map(document.getElementById(domId), myOptions);
@@ -58,19 +65,16 @@
 		function drawRoute() {
 			if (googleMap) {
 				if (!routeLine) {
-					routeLine = new google.maps.Polyline({
-						strokeColor: "#0000FF",
-						strokeOpacity: 1.0,
-						strokeWeight: 2
-					});
+					routeLine = new google.maps.Polyline(trackerSettings.routeLineOpts);
 					routeLine.setMap(googleMap);
 				}
 				var arr = [];
 				var last = 0;
-				$.each(coordinateStorage, function (index, item) {
-					if (item.timestamp - last > trackerSettings.routeLineDiff) {
+				$.each(coordinateStorage, function () {
+					if (this.timestamp - last > trackerSettings.routeLineDiff) {
 						// Draw point only if time diff to last point is bigger that routeLineDiff-setting
-						arr.push(new google.maps.LatLng(item.coords.latitude, item.coords.longitude));
+						arr.push(new google.maps.LatLng(this.coords.latitude, this.coords.longitude));
+						last = this.timestamp;
 					}
 				});
 				routeLine.setPath(arr);
@@ -80,9 +84,17 @@
 			}
 		}
 
+		function updateStatus() {
+			if (trackerSettings.statusCallback && $.isFunction(trackerSettings.statusCallback)) {
+				var last = coordinateStorage[coordinateStorage.length - 1];
+				trackerSettings.statusCallback(last);
+			}
+		}
+
 		function positionCallback(coordinates) {
 			coordinatesToList(coordinates);
 			drawRoute();
+			updateStatus();
 		}
 
 		function positionErrorCallback(error) {
@@ -103,7 +115,7 @@
 				watcherId = navigator.geolocation.watchPosition(positionCallback, positionErrorCallback, {
 					enableHighAccuracy: true,
 					timeout: 5000,
-					maximumAge: 1000
+					maximumAge: 500
 				});
 				$("#trackingStatus").html('Tracking in progress...');
 			}
@@ -146,6 +158,51 @@
 			stopPolling: function () {
 				stopPolling();
 			},
+
+			// -- For debuggin:
+			positionCallback: function (coordinates) {
+				positionCallback(coordinates);
+			},
+			toggleTestDraw: function () {
+				var dividend = 0;
+				var divisor = 16;
+				var incr = 0.0001;
+				var rad = 0.004;
+				var latInit = 60.205945;
+				var lngInit = 24.734387;
+				if (coordinateStorage.length > 0) {
+					latInit = coordinateStorage[coordinateStorage.length - 1].coords.latitude;
+					lngInit = coordinateStorage[coordinateStorage.length - 1].coords.longitude;
+				}
+				if (testIntervalId === null) {
+					testIntervalId = setInterval(function () {
+						var lat = latInit + incr + Math.sin(Math.PI * dividend / divisor) * rad;
+						var lng = lngInit + incr + Math.cos(Math.PI * dividend / divisor) * rad;
+						positionCallback({
+							coords: {
+								accuracy: 10,
+								altitude: null,
+								altitudeAccuracy: null,
+								heading: null,
+								latitude: lat,
+								longitude: lng,
+								speed: null
+							},
+							timestamp: Date.now()
+						});
+						incr += 0.0001;
+						dividend += 1;
+						if (dividend === 32) {
+							dividend = 0;
+						}
+						//						console.log('Test coords. lat: ' + lat + ', lng: ' + lng);
+					}, 1000);
+				} else {
+					clearInterval(testIntervalId);
+					testIntervalId = null;
+				}
+			},
+			// ^^ For debugging
 
 			toggleTracking: function () {
 				if (watcherId !== null) {
