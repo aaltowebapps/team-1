@@ -13,6 +13,15 @@ var geolocationMock = {
     }
 };
 
+// A mock geolocation for testing
+var googleMapsMock = {
+    trace: [],
+    LatLng: function (latitude, longitude) {
+        googleMapsMock.trace.push("LatLng('" + latitude + "', '" + longitude + "')");
+        return {"lat": latitude, "lng": longitude};
+    }
+};
+
 
 describe("GpsApi.reset()", function() {
     it("samples removed", function() {
@@ -154,5 +163,69 @@ describe("GpsApi.status()", function() {
         geolocationMock.positionCallback(sample);
         // Now the second sample should be the current status
         expect(gps.status()).toEqual(sample.coords);
+    });
+});
+
+describe("GpsApi.googleMapsTrack()", function() {
+    it("converts all samples to 'google.maps.LatLng' type", function() {
+        var gps = new GpsApi(geolocationMock);
+        gps.start();
+        // Simulate a GPS callback
+        var sample = {
+            "timestamp": 123,
+            "coords": {
+                "latitude": 12.345,
+                "longitude": 67.89,
+                "altitude": 135,
+                "speed": 79,
+                "heading": 24
+            }
+        };
+        // Add the sample
+        geolocationMock.positionCallback(sample);
+        sample.timestamp = 321;
+        sample.coords.latitude = 54.321;
+        sample.coords.longitude = 9.876;
+        // Add the second sample
+        geolocationMock.positionCallback(sample);
+        
+        googleMapsMock.trace = [];
+        var googleFormat = gps.googleMapsTrack(googleMapsMock);
+        expect(googleFormat).toEqual([{"lat": 12.345, "lng": 67.89}, {"lat": 54.321, "lng": 9.876}]);
+        expect(googleMapsMock.trace).toEqual(["LatLng('12.345', '67.89')", "LatLng('54.321', '9.876')"]);
+    });
+
+    it("convert only new samples to 'google.maps.LatLng' type", function() {
+        var gps = new GpsApi(geolocationMock);
+        gps.start();
+        // Simulate a GPS callback
+        var sample = {
+            "timestamp": 123,
+            "coords": {
+                "latitude": 12.345,
+                "longitude": 67.89,
+                "altitude": 135,
+                "speed": 79,
+                "heading": 24
+            }
+        };
+        // Add the sample
+        geolocationMock.positionCallback(sample);
+        sample.timestamp = 321;
+        sample.coords.latitude = 54.321;
+        sample.coords.longitude = 9.876;
+        // Add the second sample
+        geolocationMock.positionCallback(sample);
+        gps.googleMapsTrack(googleMapsMock);
+        sample.timestamp = 567;
+        sample.coords.latitude = 1.357;
+        sample.coords.longitude = 7.531;
+        // Add the second sample
+        geolocationMock.positionCallback(sample);
+        
+        googleMapsMock.trace = [];
+        var googleFormat = gps.googleMapsTrack(googleMapsMock);
+        expect(googleFormat).toEqual([{"lat": 12.345, "lng": 67.89}, {"lat": 54.321, "lng": 9.876}, {"lat": 1.357, "lng": 7.531}]);
+        expect(googleMapsMock.trace).toEqual(["LatLng('1.357', '7.531')"]);
     });
 });

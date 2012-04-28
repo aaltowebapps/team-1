@@ -13,6 +13,7 @@ GpsApi = function (geolocation) {
         maximumAge: 1000
     };
     this.samples = [];
+    this.samplesGoogleMaps = [];
 
     return this;
 };
@@ -23,6 +24,7 @@ GpsApi.prototype.reset = function () {
 
     this.stop();
     this.samples = [];
+    this.samplesGoogleMaps = [];
 };
 
 // Start observing the GPS
@@ -150,4 +152,22 @@ GpsApi.prototype.status = function () {
     };
 
     return coordinates;
+};
+
+
+// Provide the coordinates compatible with the Google Maps API ('google.maps')
+GpsApi.prototype.googleMapsTrack = function (googleMapsApi) {
+    'use strict';
+
+    if (this.samples.length < 1) { return []; }
+    if (!googleMapsApi) { return; }
+
+    var i;
+
+    // Convert the samples that are not yet converted
+    for (i = this.samplesGoogleMaps.length; i < this.samples.length; i = i + 1) {
+        this.samplesGoogleMaps.push(new googleMapsApi.LatLng(this.samples[i].lat, this.samples[i].lng));
+    }
+
+    return this.samplesGoogleMaps;
 };
