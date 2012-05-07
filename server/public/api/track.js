@@ -7,7 +7,7 @@ Track = function (gpsApi, xmlHttpRequest) {
 
     this.gpsApi = gpsApi;
     this.xmlHttpRequest = xmlHttpRequest;
-    this.serverUrl = "http://localhost:8080/track/UID123/";
+    this.serverUrl = "/track/UID123/";
 
     return this;
 };
