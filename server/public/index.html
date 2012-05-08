@@ -1,256 +1,267 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>GPS Tracker</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" type="text/css" />
-		<link rel="stylesheet" href="tracker.css" type="text/css" />
-		<link rel="stylesheet" href="jquery.jqplot.min.css" type="text/css" />
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.js"></script>
-		<script type="text/javascript" src="tracker.js"></script>
-		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="jquery.jqplot.min.js"></script>
-		<!--<script type="text/javascript" src="excanvas.min.js"></script>-->
-		<script type="text/javascript">
-			'use strict';
+<head>
+	<title>GPS Tracker</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"
+		type="text/css" />
+	<link rel="stylesheet" href="tracker.css" type="text/css" />
+	<link rel="stylesheet" href="jquery.jqplot.min.css" type="text/css" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.js"></script>
+	<script type="text/javascript" src="tracker.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="jquery.jqplot.min.js"></script>
+	<!--<script type="text/javascript" src="excanvas.min.js"></script>-->
+	<script type="text/javascript">
+		'use strict';
 
-			var graphsInitialized = false;
+		var graphsInitialized = false;
 
-			function updateStatusPage(last) {
-				graphsInitialized = false;
-				var base = $('#trackerStatus');
-				base.find('#statusLatitude').html(last.coords.latitude);
-				base.find('#statusLongitude').html(last.coords.longitude);
-				base.find('#statusAccuracy').html(last.coords.accuracy);
-				base.find('#statusAltitude').html(last.coords.altitude);
-				base.find('#statusAltitudeAccuracy').html(last.coords.altitudeAccuracy);
-				base.find('#statusSpeed').html(last.coords.speed);
-				base.find('#statusHeading').html(last.coords.heading);
-			}
-			
-			function createGraphs() {
-				if (!graphsInitialized)
-				{
-					$('#distancePlot').empty();
-					$('#speedPlot').empty();
-					var distanceData = tracker.getPlottableCoordinates(0, 'distance');
-					if (distanceData.length > 0)
-					{
-						var plotDistance = $.jqplot('distancePlot', [distanceData], {
-							title: 'Distance (km)',
-							series: [{ showMarker: false}],
-							axes: {
-								xaxis: {
-									label: 'Time (min)',
-									min: 0
-								}
+		function updateStatusPage(last) {
+			graphsInitialized = false;
+			var base = $('#trackerStatus');
+			base.find('#statusLatitude').html(last.coords.latitude);
+			base.find('#statusLongitude').html(last.coords.longitude);
+			base.find('#statusAccuracy').html(last.coords.accuracy);
+			base.find('#statusAltitude').html(last.coords.altitude);
+			base.find('#statusAltitudeAccuracy').html(last.coords.altitudeAccuracy);
+			base.find('#statusSpeed').html(last.coords.speed);
+			base.find('#statusHeading').html(last.coords.heading);
+		}
+		function createGraphs() {
+			if (!graphsInitialized) {
+				$('#distancePlot').empty();
+				$('#speedPlot').empty();
+				var distanceData = tracker.getPlottableCoordinates(0, 'distance');
+				if (distanceData.length > 0) {
+					var plotDistance = $.jqplot('distancePlot', [distanceData], {
+						title: 'Distance (km)',
+						series: [{ showMarker: false }],
+						axes: {
+							xaxis: {
+								label: 'Time (min)',
+								min: 0
 							}
-						});
-					} else
-					{
-						$('#distancePlot').html('No data to show yet.');
-					}
-
-					var speedData = tracker.getPlottableCoordinates(0, 'speed');
-					if (speedData.length > 0)
-					{
-						var plotSpeed = $.jqplot('speedPlot', [speedData], {
-							title: 'Speed (km/h)',
-							series: [{ showMarker: false}],
-							axes: {
-								xaxis: {
-									label: 'Time (min)',
-									min: 0
-								}
-							}
-						});
-					}
-					graphsInitialized = true;
+						}
+					});
+				} else {
+					$('#distancePlot').html('No data to show yet.');
 				}
-			}
 
-			$(document).ready(function () {
-				try
-				{
-					window.tracker.initializeMap("map_canvas", 60.186652, 24.82187,
-						{
-							statusCallback: updateStatusPage,
-							debugCoordinates: $("#coords"),
-							routeLineOpts: {
-								strokeColor: "#0000FF",
-								strokeOpacity: 1.0,
-								strokeWeight: 6
+				var speedData = tracker.getPlottableCoordinates(0, 'speed');
+				if (speedData.length > 0) {
+					var plotSpeed = $.jqplot('speedPlot', [speedData], {
+						title: 'Speed (km/h)',
+						series: [{ showMarker: false }],
+						axes: {
+							xaxis: {
+								label: 'Time (min)',
+								min: 0
 							}
-						});
-				} catch (err)
-				{
-					window.alert('Error on init: ' + err.message); // Windows Phone Emulator JavaScript doesn't like tracker var...
+						}
+					});
 				}
-				$('#toggleTracking').click(function () {
-					tracker.toggleTracking();
-				});
-				$('#togggleTest').click(function () {
-					tracker.toggleTestDraw();
-				});
+				graphsInitialized = true;
+			}
+		}
 
-				$(document).delegate("#graphs", "pageshow", createGraphs);
-				//				$(document).delegate("#graphs", "pagecreate", function () {
-				//					alert('pagecreate-event');
-				//				});
-				//				$(document).delegate("#graphs", "pageinit", function () {
-				//					alert('pageinit-event');
-				//				});
-				
-
-				//				var plotDistance = $.jqplot('distancePlot', [[1, 4], [2, 5], [4, 3], [7, 2]], {
-				//					// Give the plot a title.
-				//					title: 'Distance',
-				//					// You can specify options for all axes on the plot at once with
-				//					// the axesDefaults object.  Here, we're using a canvas renderer
-				//					// to draw the axis label which allows rotated text.
-				//					axesDefaults: {
-				//						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-				//					},
-				//					// An axes object holds options for all axes.
-				//					// Allowable axes are xaxis, x2axis, yaxis, y2axis, y3axis, ...
-				//					// Up to 9 y axes are supported.
-				//					axes: {
-				//						// options for each axis are specified in seperate option objects.
-				//						xaxis: {
-				//							label: "Time",
-				//							// Turn off "padding".  This will allow data point to lie on the
-				//							// edges of the grid.  Default padding is 1.2 and will keep all
-				//							// points inside the bounds of the grid.
-				//							pad: 0
-				//						},
-				//						yaxis: {
-				//							label: "Distance"
-				//						}
-				//					}
-				//				});
+		$(document).ready(function () {
+			try {
+				window.tracker.initializeMap("map_canvas", 60.186652, 24.82187,
+					{
+						statusCallback: updateStatusPage,
+						debugCoordinates: $("#coords"),
+						routeLineOpts: {
+							strokeColor: "#0000FF",
+							strokeOpacity: 1.0,
+							strokeWeight: 6
+						}
+					});
+			} catch (err) {
+				window.alert('Error on init: ' + err.message); // Windows Phone Emulator JavaScript doesn't like tracker var...
+			}
+			$('#toggleTracking').click(function () {
+				tracker.toggleTracking();
 			});
-		</script>
-	</head>
-	<body>
-		<div id="main" data-role="page" data-theme="b">
-			<header data-role="header">
-				<h1>
-					GPS Tracker
-				</h1>
-				<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
-					Settings
-				</a>
-			</header>
-			<div class="content" data-role="content">
-				<div class="ui-grid-a">
-					<div class="ui-block-a">
-						<a href="#statusPage" data-role="button" data-transition="flip">Status</a>
-					</div>
-					<div class="ui-block-b">
-						<a href="#graphs" data-role="button">Graphs</a>
-					</div>
-				</div>
-				<div class="ui-grid-a">
-					<div class="ui-block-a">
-						<a id="toggleTracking" href="#" data-role="button">Start/Stop</a>
-					</div>
-					<div class="ui-block-b">
-						<p id="trackingStatus" class="ui-corner-all">
-							Not tracking.
-						</p>
-					</div>
-				</div>
-				<div id="map_canvas">
-				</div>
-				<div id="coordsBox" data-role="collapsible" data-theme="a">
-					<h3>
-						Coordinates (debugging purposes)
-					</h3>
-					<div>
-						<a id="togggleTest" data-role="button">Test route drawing (spiral)</a>
-						<p id="coords"></p>
-					</div>
-				</div>
-				<div id="testPlot"></div>
-			</div>
-			<footer data-role="footer">
-				<h6>
-					&copy; Team 1
-				</h6>
-			</footer>
-		</div>
-		
-		<div id="graphs" data-role="page" data-theme="b">
-			<header data-role="header">
-				<a href="#main" data-role="button" data-direction="reverse" class="ui-btn-left">
-					Back to main
-				</a>
-				<h1>
-					GPS Tracker - Graphs
-				</h1>
-				<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
-					Settings
-				</a>
-			</header>
-			<div class="content" data-role="content">
-				<div id="distancePlot"></div>
-				<div id="speedPlot"></div>
-			</div>
-			<footer data-role="footer">
-				<h6>
-					&copy; Team 1
-				</h6>
-			</footer>
-		</div>
-		
+			$('#togggleTest').click(function () {
+				tracker.toggleTestDraw();
+			});
 
-		<div id="statusPage" data-role="page" data-theme="b">
-			<header data-role="header">
-				<a href="#main" data-role="button" data-direction="reverse" class="ui-btn-left">
-					Back to main
-				</a>
-				<h1>
-					GPS Status
-				</h1>
-				<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
-					Settings
-				</a>
-			</header>
-			<div class="content" data-role="content">
-				<div id="trackerStatus">
-					<div class="ui-grid-a">
-						<div class="ui-block-a">Latitude</div><div class="ui-block-b" id="statusLatitude"></div>
-						<div class="ui-block-a">Longitude</div><div class="ui-block-b" id="statusLongitude"></div>
-						<div class="ui-block-a">Accuracy</div><div class="ui-block-b" id="statusAccuracy"></div>
-						<div class="ui-block-a">Altitude</div><div class="ui-block-b" id="statusAltitude"></div>
-						<div class="ui-block-a">Altitude acc</div><div class="ui-block-b" id="statusAltitudeAccuracy"></div>
-						<div class="ui-block-a">Speed</div><div class="ui-block-b" id="statusSpeed"></div>
-						<div class="ui-block-a">Heading</div><div class="ui-block-b" id="statusHeading"></div>
+			$(document).delegate("#graphs", "pageshow", createGraphs);
+			//				$(document).delegate("#graphs", "pagecreate", function () {
+			//					alert('pagecreate-event');
+			//				});
+			//				$(document).delegate("#graphs", "pageinit", function () {
+			//					alert('pageinit-event');
+			//				});
+
+
+			//				var plotDistance = $.jqplot('distancePlot', [[1, 4], [2, 5], [4, 3], [7, 2]], {
+			//					// Give the plot a title.
+			//					title: 'Distance',
+			//					// You can specify options for all axes on the plot at once with
+			//					// the axesDefaults object.  Here, we're using a canvas renderer
+			//					// to draw the axis label which allows rotated text.
+			//					axesDefaults: {
+			//						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			//					},
+			//					// An axes object holds options for all axes.
+			//					// Allowable axes are xaxis, x2axis, yaxis, y2axis, y3axis, ...
+			//					// Up to 9 y axes are supported.
+			//					axes: {
+			//						// options for each axis are specified in seperate option objects.
+			//						xaxis: {
+			//							label: "Time",
+			//							// Turn off "padding".  This will allow data point to lie on the
+			//							// edges of the grid.  Default padding is 1.2 and will keep all
+			//							// points inside the bounds of the grid.
+			//							pad: 0
+			//						},
+			//						yaxis: {
+			//							label: "Distance"
+			//						}
+			//					}
+			//				});
+		});
+	</script>
+</head>
+<body>
+	<div id="main" data-role="page" data-theme="b">
+		<header data-role="header">
+			<h1>
+				GPS Tracker
+			</h1>
+			<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+				Settings </a>
+		</header>
+		<div class="content" data-role="content">
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a href="#statusPage" data-role="button" data-transition="flip">Status</a>
+				</div>
+				<div class="ui-block-b">
+					<a href="#graphs" data-role="button">Graphs</a>
+				</div>
+			</div>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a id="toggleTracking" href="#" data-role="button">Start/Stop</a>
+				</div>
+				<div class="ui-block-b">
+					<p id="trackingStatus" class="ui-corner-all">
+						Not tracking.
+					</p>
+				</div>
+			</div>
+			<div id="map_canvas">
+			</div>
+			<div id="coordsBox" data-role="collapsible" data-theme="a">
+				<h3>
+					Coordinates (debugging purposes)
+				</h3>
+				<div>
+					<a id="togggleTest" data-role="button">Test route drawing (spiral)</a>
+					<p id="coords">
+					</p>
+				</div>
+			</div>
+			<div id="testPlot">
+			</div>
+		</div>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+	<div id="graphs" data-role="page" data-theme="b">
+		<header data-role="header">
+			<a href="#main" data-role="button" data-direction="reverse" class="ui-btn-left">Back
+				to main </a>
+			<h1>
+				GPS Tracker - Graphs
+			</h1>
+			<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+				Settings </a>
+		</header>
+		<div class="content" data-role="content">
+			<div id="distancePlot">
+			</div>
+			<div id="speedPlot">
+			</div>
+		</div>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+	<div id="statusPage" data-role="page" data-theme="b">
+		<header data-role="header">
+			<a href="#main" data-role="button" data-direction="reverse" class="ui-btn-left">Back
+				to main </a>
+			<h1>
+				GPS Status
+			</h1>
+			<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+				Settings </a>
+		</header>
+		<div class="content" data-role="content">
+			<div id="trackerStatus">
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						Latitude</div>
+					<div class="ui-block-b" id="statusLatitude">
+					</div>
+					<div class="ui-block-a">
+						Longitude</div>
+					<div class="ui-block-b" id="statusLongitude">
+					</div>
+					<div class="ui-block-a">
+						Accuracy</div>
+					<div class="ui-block-b" id="statusAccuracy">
+					</div>
+					<div class="ui-block-a">
+						Altitude</div>
+					<div class="ui-block-b" id="statusAltitude">
+					</div>
+					<div class="ui-block-a">
+						Altitude acc</div>
+					<div class="ui-block-b" id="statusAltitudeAccuracy">
+					</div>
+					<div class="ui-block-a">
+						Speed</div>
+					<div class="ui-block-b" id="statusSpeed">
+					</div>
+					<div class="ui-block-a">
+						Heading</div>
+					<div class="ui-block-b" id="statusHeading">
 					</div>
 				</div>
 			</div>
-			<footer data-role="footer">
-				<h6>
-					&copy; Team 1
-				</h6>
-			</footer>
 		</div>
-	
-		<div id="settingsDialog" data-role="page" data-add-back-btn="true">
-			<header data-role="header">
-				<h1>Settings</h1>
-			</header>
-			<div class="content" data-role="content">
-				<p>
-					TODO: Change settings here
-				</p>
-			</div>
-			<footer data-role="footer">
-				<h6>
-					&copy; Team 1
-				</h6>
-			</footer>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+	<div id="settingsDialog" data-role="page" data-add-back-btn="true">
+		<header data-role="header">
+			<h1>
+				Settings</h1>
+		</header>
+		<div class="content" data-role="content">
+			<p>
+				TODO: Change settings here
+			</p>
 		</div>
-	</body>
+		<footer data-role="footer">
+			<h6>
+				&copy; Team 1
+			</h6>
+		</footer>
+	</div>
+</body>
 </html>
