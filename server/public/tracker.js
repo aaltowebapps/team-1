@@ -99,6 +99,47 @@
 			}
 		}
 
+		function getPlottableCoordinates(trackId, target) {
+			var arr = [];
+			var timeFirst = null;
+			var timePrev = null;
+			var distSum = 0;
+			$.each(coordinateStorage, function (index, item) {
+				var time, dist;
+				if (timeFirst == null)
+				{
+					timeFirst = item.timestamp;
+					time = 0;
+				}
+				else
+				{
+					time = (item.timestamp - timeFirst) / 60000; // Time as minutes
+				}
+				switch (target)
+				{
+					case 'distance':
+						distSum = distSum + item.distanceToPrevious;
+						arr.push([time, distSum]);
+						break;
+					case 'speed':
+						var speed;
+						if (timePrev == null || item.timestamp == timePrev)
+						{
+							speed = 0;
+						} else
+						{
+							speed = item.distanceToPrevious / ((item.timestamp - timePrev)/(1000*3600));
+						}
+						timePrev = item.timestamp;
+						arr.push([time, speed]);
+						break;
+					default:
+						break;
+				}
+			});
+			return arr;
+		}
+
 		function updateStatus() {
 			if (trackerSettings.statusCallback && $.isFunction(trackerSettings.statusCallback))
 			{
@@ -128,7 +169,8 @@
 			var lat2 = coords2.latitude;
 			var lng2 = coords2.longitude;
 			var d = calculateDistanceOriginal(lat1, lng1, lat2, lng2);
-			if (includeAltitude) {
+			if (includeAltitude)
+			{
 				var altDiff = coords1.altitude - coords2.altitude;
 				d = Math.sqrt(d * d + altDiff * altDiff);
 			}
@@ -196,8 +238,12 @@
 				changeSettings({ debugCoordinates: element });
 			},
 
-			coordinatesToList: function (coordinates) {
-				coordinatesToList(coordinates);
+			//			coordinatesToList: function (coordinates) {
+			//				coordinatesToList(coordinates);
+			//			},
+
+			getPlottableCoordinates: function (trackId, target) {
+				return getPlottableCoordinates(trackId, target);
 			},
 
 			startPolling: function () {
@@ -265,7 +311,8 @@
 				if (watcherId !== null)
 				{
 					stopPolling();
-				} else
+				}
+				else
 				{
 					startPolling();
 				}
