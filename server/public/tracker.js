@@ -132,7 +132,7 @@
 			}
 			var data = toBase64();
 			sendTrackData(data, coordinateStorageId);
-			resetTrack();
+			trackIsEditable = false;
 			return true;
 		}
 
@@ -146,7 +146,7 @@
 		function initializeGoogleMaps(domId, centerLat, centerLng) {
 			var myOptions = {
 				center: new google.maps.LatLng(centerLat, centerLng),
-				zoom: 16,
+				zoom: 15,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 			googleMap = new google.maps.Map(document.getElementById(domId), myOptions);
@@ -231,7 +231,7 @@
 					}
 					var diff = coordinates.timestamp - lastTimeStamp;
 					lastTimeStamp = coordinates.timestamp;
-					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + ', diffToPrev: ' + diff + '</div>');
+					var $item = $('<div>Lat: ' + coordinates.coords.latitude + ', Lng: ' + coordinates.coords.longitude + ', Accuracy: ' + coordinates.coords.accuracy + ', timestamp: ' + coordinates.timestamp + ', timeDiffToPrev: ' + diff + '</div>');
 					trackerSettings.debugCoordinates.prepend($item);
 					$item.addClass(cssClass).hide().show('slow');
 				}
@@ -254,7 +254,7 @@
 					routeLine = new google.maps.Polyline(trackerSettings.routeLineOpts);
 					routeLine.setMap(googleMap);
 				}
-				if (routeLinePath === null)
+				if (routeLinePath === null || fromScratch === true)
 				{
 					routeLinePath = [];
 				}
@@ -403,7 +403,7 @@
 		}
 
 		function toggleTestDraw(stop) {
-			if (testIntervalId === null && (!trackIsEditable && !askForReset()))
+			if (!stop && testIntervalId === null && (!trackIsEditable && !askForReset()))
 			{
 				return;
 			}
@@ -516,6 +516,8 @@
 			},
 
 			saveTrack: function () {
+				toggleTestDraw(true);
+				stopPolling();
 				return saveTrack();
 			},
 

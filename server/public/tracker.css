@@ -1,9 +1,12 @@
 ﻿
 #trackingStatus {
+	height: 50px;
 	font-size: 1em;
 	font-weight: bold;
+	vertical-align: middle;
 	color: #666;
 	padding-left: 1em;
+	margin: 0 auto;
 }
 #coordsBox {	
 }

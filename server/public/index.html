@@ -9,12 +9,12 @@
 	<link rel="stylesheet" href="jquery.jqplot.min.css" type="text/css" />
 	<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
 	<script type="text/javascript">
-	$(document).bind("mobileinit", function () {
+		$(document).bind("mobileinit", function () {
 			$.extend($.mobile, {
 				defaultPageTransition: 'none'
-//				ajaxEnabled: false
-//				pushStateEnabled: false
-//				domCache: false
+			//				ajaxEnabled: false
+			//				pushStateEnabled: false
+			//				domCache: false
 			});
 		});
 	</script>
@@ -24,7 +24,16 @@
 	<script type="text/javascript" src="jquery.jqplot.min.js"></script>
 	<!--<script type="text/javascript" src="excanvas.min.js"></script>-->
 	<script type="text/javascript">
-		function updateStatusPage(last) {
+		var lastUpdate = null;
+		function updateStatusCb(last) {
+			lastUpdate = last;
+			if ($.mobile.activePage.attr('id') === 'statusPage') {
+				updateStatusPage();
+			}
+		}
+
+		function updateStatusPage() {
+			var last = lastUpdate;
 			var base = $('#trackerStatus');
 			base.find('#statusTrackId').html(last.trackid);
 			base.find('#statusTrackEditable').html(last.trackiseditable ? "true" : "false");
@@ -36,6 +45,7 @@
 			base.find('#statusSpeed').html(last.coords.speed);
 			base.find('#statusHeading').html(last.coords.heading);
 		}
+
 		function createGraphs() {
 			$('#distancePlot').empty();
 			$('#speedPlot').empty();
@@ -89,7 +99,7 @@
 			{
 				Tracker.initializeMap("map_canvas", 60.186652, 24.82187,
 					{
-						statusCallback: updateStatusPage,
+						statusCallback: updateStatusCb,
 						debugCoordinates: $("#coords"),
 						routeLineOpts: {
 							strokeColor: "#0000FF",
@@ -108,19 +118,21 @@
 				Tracker.toggleTestDraw();
 			});
 			$('#saveTrackBtn').click(function () {
-				if (Tracker.saveTrack()) {
+				if (Tracker.saveTrack())
+				{
 					alert('Track saved!');
 				}
 			});
 
 			$(document).delegate("#graphs", "pageshow", createGraphs);
+			$(document).delegate("#statusPage", "pageshow", function () {
+				updateStatusPage();
+			});
 			$(document).delegate("#loadTrackDialog", "pageshow", function () {
 				var $tracksList = $('#savedTracksList');
 				$tracksList.empty();
 				var tracksString = Tracker.loadTrackList();
 				var tracks = $.parseJSON(tracksString);
-				tracks.push('testfoo');
-				tracks.push('testbar');
 
 				var trackLinkAttrs = {
 					'class': 'loadTrackLink',
@@ -128,9 +140,11 @@
 				};
 
 				$.each(tracks, function (index, item) {
+					var date = new Date(parseInt(item));
+					var dateStr = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' | ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 					var link = $('<a/>', $.extend({
 						'trackid': item,
-						'html': item
+						'html': dateStr
 					}, trackLinkAttrs));
 					$tracksList.append(link).trigger('create');
 				});
@@ -150,33 +164,35 @@
 					Settings </a>
 			</header>
 			<div class="content" data-role="content">
-				<div class="ui-grid-b">
+				<div class="ui-grid-a">
 					<div class="ui-block-a">
 						<a href="#statusPage" data-role="button" data-transition="flip">Status</a>
 					</div>
 					<div class="ui-block-b">
 						<a href="#graphs" data-role="button">Graphs</a>
 					</div>
-					<div class="ui-block-c">
+				</div>
+				<div class="ui-grid-b">
+					<div class="ui-block-a">
 						<a id="saveTrackBtn" data-role="button">
 							Save
 						</a>
 					</div>
-				</div>
-				<div class="ui-grid-b">
-					<div class="ui-block-a">
-						<a id="toggleTracking" href="#" data-role="button">Start/Stop</a>
-					</div>
 					<div class="ui-block-b">
-						<p id="trackingStatus" class="ui-corner-all">
-							Not tracking.
-						</p>
+						<a id="toggleTracking" href="#" data-role="button" data-theme="e">
+							Start/Stop
+						</a>
 					</div>
 					<div class="ui-block-c">
 						<a href="#loadTrackDialog" data-role="button">
 							Load
 						</a>
 					</div>
+				</div>
+				<div>
+					<p id="trackingStatus" class="ui-corner-all">
+						Not tracking.
+					</p>
 				</div>
 				<div id="map_canvas">
 				</div>
@@ -208,8 +224,8 @@
 				<h1>
 					Graphs
 				</h1>
-				<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
-					Settings </a>
+				<!--<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+					Settings </a>-->
 			</header>
 			<div class="content" data-role="content">
 				<div id="distancePlot">
@@ -232,8 +248,8 @@
 				<h1>
 					Status
 				</h1>
-				<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
-					Settings </a>
+				<!--<a href="#settingsDialog" data-role="button" data-rel="dialog" data-icon="gear" class="ui-btn-right">
+					Settings </a>-->
 			</header>
 			<div class="content" data-role="content">
 				<div id="trackerStatus">
